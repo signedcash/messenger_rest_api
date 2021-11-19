@@ -7,9 +7,13 @@ import (
 
 type Authorization interface {
 	CreateUser(user textme.User) (int, error)
+	GenerateToken(username, password string) (string, error)
+	ParseToken(accesToken string) (int, error)
 }
 
 type Message interface {
+	Create(message textme.Message) (int, error)
+	GetAllByChatId(userId, chatId int) ([]textme.Message, error)
 }
 
 type Chat interface {
@@ -28,5 +32,6 @@ type Service struct {
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
+		Message:       NewMessageService(repos.Message),
 	}
 }

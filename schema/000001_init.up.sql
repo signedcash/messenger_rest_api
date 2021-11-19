@@ -20,7 +20,7 @@ CREATE TABLE messages
     chat_id         int references chats (id) on delete cascade    not null,
     sender_id       int references users (id) on delete cascade    not null,
     content         varchar(255)                                   not null,
-    created_at      timestamp                                      not null,
+    created_at      varchar(255)                                   not null,
     state           int                                            not null,
     type            int                                            not null
 );
