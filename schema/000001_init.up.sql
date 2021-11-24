@@ -11,7 +11,9 @@ CREATE TABLE chats
 (
     id              serial                                         not null unique,
     user1_id        int references users (id) on delete cascade    not null,
-    user2_id        int references users (id) on delete cascade    not null
+    user2_id        int references users (id) on delete cascade    not null,
+    vision_1        int                                            not null,
+    vision_2        int                                            not null
 );
 
 CREATE TABLE messages 
@@ -19,6 +21,7 @@ CREATE TABLE messages
     id              serial                                         not null unique,
     chat_id         int references chats (id) on delete cascade    not null,
     sender_id       int references users (id) on delete cascade    not null,
+    receiver_id     int references users (id) on delete cascade    not null,
     content         varchar(255)                                   not null,
     created_at      varchar(255)                                   not null,
     state           int                                            not null,

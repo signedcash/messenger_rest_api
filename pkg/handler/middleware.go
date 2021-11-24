@@ -11,7 +11,6 @@ import (
 const (
 	authorizationHeader = "Authorization"
 	userCtx             = "userId"
-	chatCtx             = "chat_id"
 )
 
 func (h *Handler) userIdentity(c *gin.Context) {

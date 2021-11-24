@@ -1,23 +1,77 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+	textme "github.com/signedcash/messenger_rest_api"
+)
 
 func (h *Handler) createChat(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		return
+	}
 
+	var input textme.Chat
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if input.User1Id != userId && input.User2Id != userId {
+		newErrorResponse(c, http.StatusInternalServerError, "Invalid token or chat")
+		return
+	}
+
+	id, err := h.services.Chat.Create(input)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"id": id,
+	})
 }
 
-func (h *Handler) getAllChats(c *gin.Context) {
+func (h *Handler) getAllChatsByUserId(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		return
+	}
 
-}
-
-func (h *Handler) getChatById(c *gin.Context) {
-
+	chats, err := h.services.Chat.GetAllByUserId(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, chats)
 }
 
 func (h *Handler) updateChat(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
-}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
 
-func (h *Handler) deleteChat(c *gin.Context) {
+	var input textme.UpdateChatInput
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
+	if err := h.services.Chat.Update(userId, id, input); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, statusResponse{"ok"})
 }

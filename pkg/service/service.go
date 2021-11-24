@@ -14,12 +14,19 @@ type Authorization interface {
 type Message interface {
 	Create(message textme.Message) (int, error)
 	GetAllByChatId(userId, chatId int) ([]textme.Message, error)
+	Delete(userId, messageId int) error
+	Update(userId, messageId int, input textme.UpdateMessageInput) error
 }
 
 type Chat interface {
+	Create(message textme.Chat) (int, error)
+	GetAllByUserId(userId int) ([]textme.Chat, error)
+	Update(userId, chatId int, input textme.UpdateChatInput) error
 }
 
 type Profile interface {
+	GetByUserId(id int) (textme.Profile, error)
+	Update(userId int, input textme.UpdateProfileInput) error
 }
 
 type Service struct {
@@ -33,5 +40,7 @@ func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
 		Message:       NewMessageService(repos.Message),
+		Chat:          NewChatService(repos.Chat),
+		Profile:       NewProfileService(repos.Profile),
 	}
 }
