@@ -28,11 +28,17 @@ type Profile interface {
 	Update(userId int, input textme.UpdateProfileInput) error
 }
 
+type User interface {
+	GetById(id int) (textme.UserInfo, error)
+	Update(id int, input textme.UpdateUserInput) error
+}
+
 type Repository struct {
 	Authorization
 	Message
 	Chat
 	Profile
+	User
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -41,5 +47,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Message:       NewMessagePostgres(db),
 		Chat:          NewChatPostgres(db),
 		Profile:       NewProfilePostgres(db),
+		User:          NewUserPostgres(db),
 	}
 }

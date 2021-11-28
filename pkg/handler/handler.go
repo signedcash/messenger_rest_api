@@ -45,6 +45,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			profiles.GET("/:id", h.getProfileByUserId)
 			profiles.PUT("/", h.updateProfile)
 		}
+
+		users := api.Group("/users")
+		{
+			users.GET("/:id", h.getUserById)
+			users.PUT("/", h.updateUser)
+		}
 	}
 
 	return router

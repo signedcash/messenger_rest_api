@@ -29,11 +29,17 @@ type Profile interface {
 	Update(userId int, input textme.UpdateProfileInput) error
 }
 
+type User interface {
+	GetById(id int) (textme.UserInfo, error)
+	Update(id int, input textme.UpdateUserInput) error
+}
+
 type Service struct {
 	Authorization
 	Profile
 	Chat
 	Message
+	User
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -42,5 +48,6 @@ func NewService(repos *repository.Repository) *Service {
 		Message:       NewMessageService(repos.Message),
 		Chat:          NewChatService(repos.Chat),
 		Profile:       NewProfileService(repos.Profile),
+		User:          NewUserService(repos.User),
 	}
 }
