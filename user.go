@@ -11,9 +11,10 @@ type User struct {
 }
 
 type UserInfo struct {
-	Id     int    `json:"-" db:"id"`
-	Name   string `json:"name" db:"name"`
-	ImgUrl string `json:"img_url" db:"img_url"`
+	Id       int    `json:"id" db:"id"`
+	Username string `json:"username" db:"username"`
+	Name     string `json:"name" db:"name"`
+	ImgUrl   string `json:"img_url" db:"img_url"`
 }
 
 type UpdateUserInput struct {

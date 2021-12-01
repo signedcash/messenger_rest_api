@@ -18,8 +18,8 @@ func NewMessagePostgres(db *sqlx.DB) *MessagePostgres {
 
 func (r *MessagePostgres) Create(message textme.Message) (int, error) {
 	var id int
-	query := fmt.Sprintf("INSERT INTO %s (chat_id, sender_id, content, created_at, state, type) values ($1, $2, $3, $4, $5, $6) RETURNING id", messagesTable)
-	row := r.db.QueryRow(query, message.ChatId, message.SenderId, message.Content, message.CreatedAt, message.State, message.Type)
+	query := fmt.Sprintf("INSERT INTO %s (chat_id, sender_id, content, created_at) values ($1, $2, $3, $4) RETURNING id", messagesTable)
+	row := r.db.QueryRow(query, message.ChatId, message.SenderId, message.Content, message.CreatedAt)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
@@ -40,6 +40,24 @@ func (r *MessagePostgres) GetAllByChatId(userId, chatId int) ([]textme.Message, 
 	err := r.db.Select(&messages, query, userId, chatId)
 
 	return messages, err
+}
+
+func (r *MessagePostgres) GetLastByChatId(userId, chatId int) (textme.Message, error) {
+	var message textme.Message
+
+	query := fmt.Sprintf(`SELECT *
+						  FROM %s
+						  WHERE EXISTS (SELECT 1 
+						   			    FROM %s 
+										WHERE (user1_id = $1 OR user2_id = $1) 
+										AND (id = $2))
+						  AND chat_id = $2
+						  ORDER BY id
+						  DESC LIMIT 1`,
+		messagesTable, chatsTable)
+	err := r.db.Get(&message, query, userId, chatId)
+
+	return message, err
 }
 
 func (r *MessagePostgres) Delete(userId, messageId int) error {
@@ -63,18 +81,6 @@ func (r *MessagePostgres) Update(userId, messageId int, input textme.UpdateMessa
 	if input.CreatedAt != nil {
 		setValues = append(setValues, fmt.Sprintf("created_at=$%d", argId))
 		args = append(args, *input.CreatedAt)
-		argId++
-	}
-
-	if input.State != nil {
-		setValues = append(setValues, fmt.Sprintf("state=$%d", argId))
-		args = append(args, *input.State)
-		argId++
-	}
-
-	if input.Type != nil {
-		setValues = append(setValues, fmt.Sprintf("type=$%d", argId))
-		args = append(args, *input.Type)
 		argId++
 	}
 

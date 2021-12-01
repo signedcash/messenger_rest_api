@@ -50,6 +50,26 @@ func (h *Handler) getAllChatsByUserId(c *gin.Context) {
 	c.JSON(http.StatusOK, chats)
 }
 
+func (h *Handler) getChatByUserId(c *gin.Context) {
+	user1Id, err := getUserId(c)
+	if err != nil {
+		return
+	}
+
+	user2Id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid user id param")
+		return
+	}
+
+	chat, err := h.services.Chat.GetByUserId(user1Id, user2Id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, chat)
+}
+
 func (h *Handler) updateChat(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {

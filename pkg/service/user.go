@@ -17,6 +17,10 @@ func (s *UserService) GetById(id int) (textme.UserInfo, error) {
 	return s.repo.GetById(id)
 }
 
+func (s *UserService) GetByName(name string) (textme.UserInfo, error) {
+	return s.repo.GetByName(name)
+}
+
 func (s *UserService) Update(id int, input textme.UpdateUserInput) error {
 	if err := input.Validate(); err != nil {
 		return err

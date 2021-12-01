@@ -28,6 +28,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			messages.POST("/", h.createMesssage)
 			messages.GET("/:chat_id", h.getAllMessagesByChatId)
+			messages.GET("/last/:chat_id", h.getLastMessageByChatId)
 			messages.PUT("/:id", h.updateMessage)
 			messages.DELETE("/:id", h.deleteMessage)
 
@@ -37,6 +38,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			chats.POST("/", h.createChat)
 			chats.GET("/", h.getAllChatsByUserId)
+			chats.GET("/:id", h.getChatByUserId)
 			chats.PUT("/:id", h.updateChat)
 		}
 
@@ -49,6 +51,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		users := api.Group("/users")
 		{
 			users.GET("/:id", h.getUserById)
+			users.GET("/search/:name", h.getUserByName)
+			users.GET("/", h.getUser)
 			users.PUT("/", h.updateUser)
 		}
 	}

@@ -21,6 +21,10 @@ func (s *ChatService) GetAllByUserId(userId int) ([]textme.Chat, error) {
 	return s.repo.GetAllByUserId(userId)
 }
 
+func (s *ChatService) GetByUserId(user1Id, user2Id int) (textme.Chat, error) {
+	return s.repo.GetByUserId(user1Id, user2Id)
+}
+
 func (s *ChatService) Update(userId, chatId int, input textme.UpdateChatInput) error {
 	if err := input.Validate(); err != nil {
 		return err

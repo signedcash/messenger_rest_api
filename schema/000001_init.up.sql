@@ -1,7 +1,7 @@
 CREATE TABLE users 
 (
     id              serial          not null unique,
-    username        varchar(255)    not null,
+    username        varchar(255)    not null unique,
     password_hash   varchar(255)    not null,
     name            varchar(255)    not null,
     img_url         varchar(255)
@@ -21,11 +21,8 @@ CREATE TABLE messages
     id              serial                                         not null unique,
     chat_id         int references chats (id) on delete cascade    not null,
     sender_id       int references users (id) on delete cascade    not null,
-    receiver_id     int references users (id) on delete cascade    not null,
     content         varchar(255)                                   not null,
-    created_at      varchar(255)                                   not null,
-    state           int                                            not null,
-    type            int                                            not null
+    created_at      varchar(255)                                   not null
 );
 
 CREATE TABLE profiles 

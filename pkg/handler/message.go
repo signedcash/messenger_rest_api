@@ -61,6 +61,27 @@ func (h *Handler) getAllMessagesByChatId(c *gin.Context) {
 	c.JSON(http.StatusOK, messenges)
 }
 
+func (h *Handler) getLastMessageByChatId(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		return
+	}
+
+	chatId, err := strconv.Atoi(c.Param("chat_id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, "Invalid chat id param")
+		return
+	}
+
+	message, err := h.services.Message.GetLastByChatId(userId, chatId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, message)
+}
+
 func (h *Handler) deleteMessage(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {

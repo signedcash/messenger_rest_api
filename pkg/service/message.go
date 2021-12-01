@@ -21,6 +21,10 @@ func (s *MessageService) GetAllByChatId(userId, chatId int) ([]textme.Message, e
 	return s.repo.GetAllByChatId(userId, chatId)
 }
 
+func (s *MessageService) GetLastByChatId(userId, chatId int) (textme.Message, error) {
+	return s.repo.GetLastByChatId(userId, chatId)
+}
+
 func (s *MessageService) Delete(userId, messageId int) error {
 	return s.repo.Delete(userId, messageId)
 }

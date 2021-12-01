@@ -17,12 +17,10 @@ type Message struct {
 	SenderId  int    `json:"sender_id" db:"sender_id" binding:"required"`
 	Content   string `json:"content" db:"content" binding:"required"`
 	CreatedAt string `json:"created_at" db:"created_at" binding:"required"`
-	State     int    `json:"state" db:"state" binding:"required"`
-	Type      int    `json:"type" db:"type" binding:"required"`
 }
 
 type Chat struct {
-	Id      int `json:"-" db:"id"`
+	Id      int `json:"id" db:"id"`
 	User1Id int `json:"user1_id" db:"user1_id" binding:"required"`
 	User2Id int `json:"user2_id" db:"user2_id" binding:"required"`
 	Vision1 int `json:"vision_1" db:"vision_1" binding:"required"`
@@ -47,12 +45,10 @@ func (i UpdateProfileInput) Validate() error {
 type UpdateMessageInput struct {
 	Content   *string `json:"content"`
 	CreatedAt *string `json:"created_at"`
-	State     *int    `json:"state"`
-	Type      *int    `json:"type"`
 }
 
 func (i UpdateMessageInput) Validate() error {
-	if i.Content == nil && i.CreatedAt == nil && i.State == nil && i.Type == nil {
+	if i.Content == nil && i.CreatedAt == nil {
 		return errors.New("update structure has no values")
 	}
 

@@ -41,6 +41,19 @@ func (r *ChatPostgres) GetAllByUserId(userId int) ([]textme.Chat, error) {
 	return chats, err
 }
 
+func (r *ChatPostgres) GetByUserId(user1Id, user2Id int) (textme.Chat, error) {
+	var chat textme.Chat
+
+	query := fmt.Sprintf(`SELECT *
+						  FROM %s
+						  WHERE (user1_id = $1 AND user2_id = $2) OR
+						  		(user1_id = $2 AND user2_id = $1)`,
+		chatsTable)
+	err := r.db.Get(&chat, query, user1Id, user2Id)
+
+	return chat, err
+}
+
 func (r *ChatPostgres) Update(userId, chatId int, input textme.UpdateChatInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)

@@ -19,11 +19,23 @@ func NewUserPostgres(db *sqlx.DB) *UserPostgres {
 func (r *UserPostgres) GetById(id int) (textme.UserInfo, error) {
 	var user textme.UserInfo
 
-	query := fmt.Sprintf(`SELECT name, img_url
+	query := fmt.Sprintf(`SELECT id, username, name, img_url
 						  FROM %s
 						  WHERE id = $1`,
 		usersTable)
 	err := r.db.Get(&user, query, id)
+
+	return user, err
+}
+
+func (r *UserPostgres) GetByName(name string) (textme.UserInfo, error) {
+	var user textme.UserInfo
+
+	query := fmt.Sprintf(`SELECT id, username, name, img_url
+						  FROM %s
+						  WHERE name = $1 OR username = $1`,
+		usersTable)
+	err := r.db.Get(&user, query, name)
 
 	return user, err
 }
